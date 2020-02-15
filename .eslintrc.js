@@ -1,4 +1,4 @@
 module.exports = {
-  root: true,
-  extends: ['airbnb'],
+  // root: true,
+  // extends: ['airbnb'],
 };
