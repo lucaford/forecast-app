@@ -1,12 +1,11 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useCallback, memo} from 'react';
 import {
   StyleSheet,
   View,
   AsyncStorage,
-  Text,
+  Alert,
   ActivityIndicator,
 } from 'react-native';
-import {ifIphoneX} from 'react-native-iphone-x-helper';
 import Axios from 'axios';
 
 import Map from './src/components/Maps/Map';
@@ -16,9 +15,12 @@ import WeatherInformation from './src/components/WeatherInformation/WeatherInfor
 // should be in .env
 const WEATHER_API_KEY = '7e1bfbfd5085077f6af4f13371a8dc8a';
 
-const App = () => {
+const App = memo(() => {
   const [cityInput, setCityInput] = useState('');
-  const [weatherInformation, setWeatherInformation] = useState({});
+  const [weatherInformation, setWeatherInformation] = useState({
+    main: '',
+    clouds: '',
+  });
   const [loading, setLoading] = useState(false);
   const [lastSearches, setLastSearches] = useState([]);
 
@@ -32,19 +34,24 @@ const App = () => {
     try {
       setLoading(true);
       setLastSearches(cities => cities.concat(cityInput));
+
+      // in large apps I would use Mobx
       await AsyncStorage.setItem('lastSearches', JSON.stringify(lastSearches));
+
+      // all axios requests should be in another file.
       const response = await Axios.get(
         `http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${WEATHER_API_KEY}`,
       );
       setCityInput('');
       const {
-        data: {main, coord},
+        data: {main, coord, clouds},
       } = response;
-      setWeatherInformation(main);
-      mapRef.current.fitToCoordinates(coord);
+      setWeatherInformation({main, clouds});
+
+      await mapRef.current.fitToCoordinates(coord);
     } catch (error) {
       // navigate to error screen
-      console.log('Navigate to error screen');
+      Alert.alert('Ups ... an error occurred');
     } finally {
       setLoading(false);
     }
@@ -58,24 +65,20 @@ const App = () => {
         </View>
       ) : (
         <View style={styles.container}>
-          <View style={styles.cityInputContainer}>
-            <CityInput
-              onChangeCityInputText={handleChangeCityInputText}
-              onSearchByCityPress={handleSearchByCityPress}
-              value={cityInput}
-            />
-          </View>
+          <CityInput
+            onChangeCityInputText={handleChangeCityInputText}
+            onSearchByCityPress={handleSearchByCityPress}
+            value={cityInput}
+          />
 
           <WeatherInformation weatherInfo={weatherInformation} />
 
-          <View style={styles.mapContainer}>
-            <Map ref={mapRef} />
-          </View>
+          <Map ref={mapRef} />
         </View>
       )}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -85,22 +88,6 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
-  },
-
-  cityInputContainer: {
-    flex: 1,
-    ...ifIphoneX(
-      {
-        paddingTop: 50,
-      },
-      {
-        paddingTop: 20,
-      },
-    ),
-  },
-
-  mapContainer: {
-    flex: 1,
   },
 });
 
