@@ -1,113 +1,106 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
+  AsyncStorage,
   Text,
-  StatusBar,
+  ActivityIndicator,
 } from 'react-native';
+import {ifIphoneX} from 'react-native-iphone-x-helper';
+import Axios from 'axios';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import Map from './src/components/Maps/Map';
+import CityInput from './src/components/CityInput/CityInput';
+import WeatherInformation from './src/components/WeatherInformation/WeatherInformation';
 
-const App: () => React$Node = () => {
+// should be in .env
+const WEATHER_API_KEY = '7e1bfbfd5085077f6af4f13371a8dc8a';
+
+const App = () => {
+  const [cityInput, setCityInput] = useState('');
+  const [weatherInformation, setWeatherInformation] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [lastSearches, setLastSearches] = useState([]);
+
+  const mapRef = useRef(null);
+
+  const handleChangeCityInputText = value => {
+    setCityInput(value);
+  };
+
+  const handleSearchByCityPress = async () => {
+    try {
+      setLoading(true);
+      setLastSearches(cities => cities.concat(cityInput));
+      await AsyncStorage.setItem('lastSearches', JSON.stringify(lastSearches));
+      const response = await Axios.get(
+        `http://api.openweathermap.org/data/2.5/weather?q=london&appid=${WEATHER_API_KEY}`,
+      );
+      setCityInput('');
+      const {
+        data: {main, coord},
+      } = response;
+      setWeatherInformation(main);
+      mapRef.current.fitToCoordinates(coord);
+    } catch (error) {
+      // navigate to error screen
+      console.log('Navigate to error screen');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+    <View style={styles.container}>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.cityInputContainer}>
+            <CityInput
+              onChangeCityInputText={handleChangeCityInputText}
+              onSearchByCityPress={handleSearchByCityPress}
+              value={cityInput}
+            />
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+
+          <WeatherInformation weatherInfo={weatherInformation} />
+
+          <View style={styles.mapContainer}>
+            <Map ref={mapRef} />
+          </View>
+        </View>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  body: {
-    backgroundColor: Colors.white,
+
+  cityInputContainer: {
+    flex: 1,
+    ...ifIphoneX(
+      {
+        paddingTop: 50,
+      },
+      {
+        paddingTop: 20,
+      },
+    ),
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+
+  mapContainer: {
+    flex: 1,
   },
 });
 
