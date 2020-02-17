@@ -1,38 +1,40 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 
-const WeatherInformation = ({weatherInfo}) => {
+const WeatherInformation = memo(({weatherInfo}) => {
+  const {clouds, main} = weatherInfo;
+
   return (
     <View style={styles.container}>
       <View>
         {/* this should be in i18n */}
         <Text>Temperatura mínima: </Text>
-        <Text>{weatherInfo.temp_min}</Text>
+        <Text>{main.temp_min}</Text>
         <Text>Temperatura máxima: </Text>
-        <Text>{weatherInfo.temp_max}</Text>
+        <Text>{main.temp_max}</Text>
         <Text>Temperatura actual: </Text>
-        <Text>{weatherInfo.temp}</Text>
+        <Text>{main.temp}</Text>
         <Text>Presión: </Text>
-        <Text>{weatherInfo.pressure}</Text>
+        <Text>{main.pressure}</Text>
         <Text>Humedad: </Text>
-        <Text>{weatherInfo.humidity}</Text>
+        <Text>{main.humidity}</Text>
       </View>
       <View>
-        {weatherInfo.temp < 50 ? (
+        {clouds >= '60' ? (
           <Image
             source={require('./images/rain-icon.png')}
             style={{height: 200, width: 200}}
           />
         ) : (
           <Image
-            source={require('./images/rain-icon.png')}
+            source={require('./images/sun-icon.png')}
             style={{height: 200, width: 200}}
           />
         )}
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
