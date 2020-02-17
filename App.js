@@ -34,7 +34,7 @@ const App = () => {
       setLastSearches(cities => cities.concat(cityInput));
       await AsyncStorage.setItem('lastSearches', JSON.stringify(lastSearches));
       const response = await Axios.get(
-        `http://api.openweathermap.org/data/2.5/weather?q=london&appid=${WEATHER_API_KEY}`,
+        `http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${WEATHER_API_KEY}`,
       );
       setCityInput('');
       const {
