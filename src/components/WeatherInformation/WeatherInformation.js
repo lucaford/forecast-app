@@ -29,7 +29,7 @@ const WeatherInformation = memo(({weatherInfo}) => {
         <Text>{main.humidity}</Text>
       </View>
       <View>
-        {clouds >= '60' ? (
+        {clouds.all >= '60' ? (
           <Image
             source={require('./images/rain-icon.png')}
             style={{height: 200, width: 200}}

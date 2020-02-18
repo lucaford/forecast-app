@@ -9,10 +9,15 @@ import {
 } from 'react-native';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
 
-const RenderLastSearches = async () => {
+// i would move all AsyncStorage calls to another file and make them like getters/setters. This shouldn't be here
+const getLastSearches = async () => {
   const jsonLastSearches = await AsyncStorage.getItem('lastSearches');
-  const lastSearches = JSON.parse(jsonLastSearches);
-  console.log('LAST: ', lastSearches);
+
+  return JSON.parse(jsonLastSearches);
+};
+
+const LastSearches = () => {
+  // const lastSearches = getLastSearches();
 
   return (
     <View
@@ -21,7 +26,9 @@ const RenderLastSearches = async () => {
         flexDirection: 'row',
         justifyContent: 'space-around',
       }}>
-      <Text>hola</Text>
+      {/* {lastSearches.map(city => (
+        <Text>{city}</Text>
+      ))} */}
     </View>
   );
 };
@@ -39,10 +46,10 @@ const CityInput = memo(
       </View>
       <View style={styles.actionButtons}>
         <TouchableWithoutFeedback onPress={onSearchByCityPress}>
-          <Text style={styles.searchsText}>Buscar</Text>
+          <Text style={styles.searchsText}>Search</Text>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback>
-          <Text style={styles.searchsText}>Últimas busquedas</Text>
+          <Text style={styles.searchsText}>Last searches</Text>
         </TouchableWithoutFeedback>
       </View>
       <View
@@ -51,7 +58,7 @@ const CityInput = memo(
           flexDirection: 'row',
           justifyContent: 'space-around',
         }}>
-        {RenderLastSearches}
+        <LastSearches />
       </View>
     </View>
   ),
