@@ -1,8 +1,17 @@
 import React, {memo} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import {isEmpty} from 'lodash';
 
 const WeatherInformation = memo(({weatherInfo}) => {
   const {clouds, main} = weatherInfo;
+
+  if (isEmpty(main)) {
+    return (
+      <View style={styles.container}>
+        <Text>Write the city you want to know the weather of</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

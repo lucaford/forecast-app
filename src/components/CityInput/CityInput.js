@@ -4,9 +4,27 @@ import {
   View,
   TextInput,
   Text,
+  AsyncStorage,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
+
+const RenderLastSearches = async () => {
+  const jsonLastSearches = await AsyncStorage.getItem('lastSearches');
+  const lastSearches = JSON.parse(jsonLastSearches);
+  console.log('LAST: ', lastSearches);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+      }}>
+      <Text>hola</Text>
+    </View>
+  );
+};
 
 const CityInput = memo(
   ({onChangeCityInputText, onSearchByCityPress, value}) => (
@@ -26,6 +44,14 @@ const CityInput = memo(
         <TouchableWithoutFeedback>
           <Text style={styles.searchsText}>Últimas busquedas</Text>
         </TouchableWithoutFeedback>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}>
+        {RenderLastSearches}
       </View>
     </View>
   ),
