@@ -1,12 +1,12 @@
-import React, {memo} from 'react';
+import React, {memo} from 'react'
 import {
   StyleSheet,
   View,
   TextInput,
   Text,
   TouchableWithoutFeedback,
-} from 'react-native';
-import {ifIphoneX} from 'react-native-iphone-x-helper';
+} from 'react-native'
+import {ifIphoneX} from 'react-native-iphone-x-helper'
 
 // i would set propTypes with every prop that the component is receiving
 const CityInput = memo(
@@ -46,7 +46,7 @@ const CityInput = memo(
       </View>
     </View>
   ),
-);
+)
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
   },
 
   actionButtons: {},
-});
+})
 
-export default CityInput;
+export default CityInput
