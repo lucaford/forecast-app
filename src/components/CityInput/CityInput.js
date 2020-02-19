@@ -8,41 +8,24 @@ import {
 } from 'react-native';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
 
-// i would set propTypes with every prop that the component is receiving
 const CityInput = memo(
-  ({onChangeCityInputText, onSearchByCityPress, value, lastSearches}) => (
+  ({onChangeCityInputText, onSearchByCityPress, value}) => (
     <View style={styles.container}>
       <View>
         <TextInput
           placeholder="Ingresá las tres primeras letras"
-          style={styles.cityInput}
+          style={styles.textInput}
           onChangeText={onChangeCityInputText}
           value={value}
         />
       </View>
       <View style={styles.actionButtons}>
         <TouchableWithoutFeedback onPress={onSearchByCityPress}>
-          <Text style={styles.searchText}>Search</Text>
+          <Text style={styles.searchsText}>Buscar</Text>
         </TouchableWithoutFeedback>
-        <Text style={[styles.searchText, styles.lastSearchText]}>
-          {/* i would put last searches on an overlay with transparent background, using react-native-navigation ( wix ) */}
-          Last searches
-        </Text>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-        }}>
-        {/* // i would cut off repeated cities */}
-        {lastSearches.map((city, index) => (
-          <TouchableWithoutFeedback
-            onPress={() => onChangeCityInputText(city)}
-            key={index}>
-            <Text style={styles.cityText}>{city}</Text>
-          </TouchableWithoutFeedback>
-        ))}
+        <TouchableWithoutFeedback>
+          <Text style={styles.searchsText}>Últimas busquedas</Text>
+        </TouchableWithoutFeedback>
       </View>
     </View>
   ),
@@ -62,25 +45,13 @@ const styles = StyleSheet.create({
     ),
   },
 
-  cityInput: {
+  textInput: {
     height: 30,
     borderColor: 'gray',
     borderWidth: 1,
   },
 
-  searchText: {
-    color: 'violet',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-
-  lastSearchText: {
-    color: 'black',
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-
-  cityText: {
+  searchsText: {
     color: 'violet',
     textAlign: 'center',
     marginTop: 5,
