@@ -1,8 +1,17 @@
 import React, {memo} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import {isEmpty} from 'lodash';
 
 const WeatherInformation = memo(({weatherInfo}) => {
   const {clouds, main} = weatherInfo;
+
+  if (isEmpty(main)) {
+    return (
+      <View style={styles.container}>
+        <Text>Write the city you want to know the weather of</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -20,7 +29,7 @@ const WeatherInformation = memo(({weatherInfo}) => {
         <Text>{main.humidity}</Text>
       </View>
       <View>
-        {clouds >= '60' ? (
+        {clouds.all >= '60' ? (
           <Image
             source={require('./images/rain-icon.png')}
             style={{height: 200, width: 200}}
