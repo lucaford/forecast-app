@@ -1,31 +1,31 @@
-import React, {memo} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
-import {isEmpty} from 'lodash';
+import React, {memo} from 'react'
+import {View, Text, StyleSheet, Image} from 'react-native'
+import {isEmpty} from 'lodash'
 
 const WeatherInformation = memo(({weatherInfo}) => {
-  const {clouds, main} = weatherInfo;
+  const {clouds, main} = weatherInfo
 
   if (isEmpty(main)) {
     return (
       <View style={styles.container}>
         <Text>Write the city you want to know the weather of</Text>
       </View>
-    );
+    )
   }
 
   return (
     <View style={styles.container}>
       <View>
         {/* this should be in i18n */}
-        <Text>Temperatura mínima: </Text>
+        <Text>Min temperature: </Text>
         <Text>{main.temp_min}</Text>
-        <Text>Temperatura máxima: </Text>
+        <Text>Max temperature: </Text>
         <Text>{main.temp_max}</Text>
-        <Text>Temperatura actual: </Text>
+        <Text>Temperature: </Text>
         <Text>{main.temp}</Text>
-        <Text>Presión: </Text>
+        <Text>Pressure: </Text>
         <Text>{main.pressure}</Text>
-        <Text>Humedad: </Text>
+        <Text>Humidity: </Text>
         <Text>{main.humidity}</Text>
       </View>
       <View>
@@ -42,8 +42,8 @@ const WeatherInformation = memo(({weatherInfo}) => {
         )}
       </View>
     </View>
-  );
-});
+  )
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-});
+})
 
-export default WeatherInformation;
+export default WeatherInformation
