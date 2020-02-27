@@ -1,8 +1,8 @@
-import React, {memo} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import React, {memo} from 'react'
+import {View, Text, StyleSheet, Image} from 'react-native'
 
 const WeatherInformation = memo(({weatherInfo}) => {
-  const {clouds, main} = weatherInfo;
+  const {clouds, main} = weatherInfo
 
   return (
     <View style={styles.container}>
@@ -33,8 +33,8 @@ const WeatherInformation = memo(({weatherInfo}) => {
         )}
       </View>
     </View>
-  );
-});
+  )
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-});
+})
 
-export default WeatherInformation;
+export default WeatherInformation

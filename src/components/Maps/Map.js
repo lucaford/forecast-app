@@ -1,10 +1,10 @@
-import React, {useImperativeHandle, forwardRef, memo} from 'react';
-import {StyleSheet} from 'react-native';
-import MapView from 'react-native-maps';
+import React, {useImperativeHandle, forwardRef, memo} from 'react'
+import {StyleSheet} from 'react-native'
+import MapView from 'react-native-maps'
 
 const Map = memo(
   forwardRef(({}, ref) => {
-    let mapRef = null;
+    let mapRef = null
     useImperativeHandle(ref, () => ({
       fitToCoordinates: coordinates => {
         mapRef.animateToRegion(
@@ -15,9 +15,9 @@ const Map = memo(
             longitudeDelta: 0.01,
           },
           2000,
-        );
+        )
       },
-    }));
+    }))
 
     return (
       <MapView
@@ -29,17 +29,17 @@ const Map = memo(
           longitudeDelta: 0.0421,
         }}
         ref={ref => {
-          mapRef = ref;
+          mapRef = ref
         }}
       />
-    );
+    )
   }),
-);
+)
 
 const styles = StyleSheet.create({
   map: {
     height: 400,
   },
-});
+})
 
-export default Map;
+export default Map

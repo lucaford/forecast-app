@@ -1,61 +1,64 @@
-import React, {useState, useRef, useCallback, memo} from 'react';
+import React, {useState, useRef, memo, useCallback} from 'react'
 import {
   StyleSheet,
   View,
   AsyncStorage,
   Alert,
   ActivityIndicator,
-} from 'react-native';
-import Axios from 'axios';
+} from 'react-native'
+import Axios from 'axios'
 
-import Map from './src/components/Maps/Map';
-import CityInput from './src/components/CityInput/CityInput';
-import WeatherInformation from './src/components/WeatherInformation/WeatherInformation';
+import Map from './src/components/Maps/Map'
+import CityInput from './src/components/CityInput/CityInput'
+import WeatherInformation from './src/components/WeatherInformation/WeatherInformation'
 
 // should be in .env
-const WEATHER_API_KEY = '7e1bfbfd5085077f6af4f13371a8dc8a';
+const WEATHER_API_KEY = '7e1bfbfd5085077f6af4f13371a8dc8a'
 
 const App = memo(() => {
-  const [cityInput, setCityInput] = useState('');
+  const [cityInput, setCityInput] = useState('')
   const [weatherInformation, setWeatherInformation] = useState({
     main: '',
     clouds: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [lastSearches, setLastSearches] = useState([]);
+  })
+  const [loading, setLoading] = useState(false)
+  const [lastSearches, setLastSearches] = useState([])
 
-  const mapRef = useRef(null);
+  const mapRef = useRef(null)
 
-  const handleChangeCityInputText = value => {
-    setCityInput(value);
-  };
+  const handleChangeCityInputText = useCallback(
+    value => {
+      setCityInput(value)
+    },
+    [cityInput],
+  )
 
-  const handleSearchByCityPress = async () => {
+  const handleSearchByCityPress = useCallback(async () => {
     try {
-      setLoading(true);
-      setLastSearches(cities => cities.concat(cityInput));
+      setLoading(true)
+      setLastSearches(cities => cities.concat(cityInput))
 
       // in large apps I would use Mobx
-      await AsyncStorage.setItem('lastSearches', JSON.stringify(lastSearches));
+      await AsyncStorage.setItem('lastSearches', JSON.stringify(lastSearches))
 
       // all axios requests should be in another file.
       const response = await Axios.get(
         `http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${WEATHER_API_KEY}`,
-      );
-      setCityInput('');
+      )
+      setCityInput('')
       const {
         data: {main, coord, clouds},
-      } = response;
-      setWeatherInformation({main, clouds});
+      } = response
+      setWeatherInformation({main, clouds})
 
-      await mapRef.current.fitToCoordinates(coord);
+      await mapRef.current.fitToCoordinates(coord)
     } catch (error) {
       // navigate to error screen
-      Alert.alert('Ups ... an error occurred');
+      Alert.alert('Ups ... an error occurred')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [loading, lastSearches, cityInput])
 
   return (
     <View style={styles.container}>
@@ -77,8 +80,8 @@ const App = memo(() => {
         </View>
       )}
     </View>
-  );
-});
+  )
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -89,6 +92,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-});
+})
 
-export default App;
+export default App
